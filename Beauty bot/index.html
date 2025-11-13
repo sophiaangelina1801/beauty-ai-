@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Beauty AI - Assistente de Beleza</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, #a4508b, #5f0a87);
+        color: #333;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 900px;
+        background-color: #fff;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(95, 10, 135, 0.2);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        height: 85vh;
+      }
+
+      .header {
+        background: linear-gradient(to right, #5f0a87, #a4508b);
+        color: white;
+        padding: 20px;
+        text-align: center;
+        position: relative;
+      }
+
+      .header img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 3px solid white;
+        margin-bottom: 10px;
+      }
+
+      .header h1 {
+        font-size: 2rem;
+        font-weight: 600;
+      }
+
+      .header p {
+        font-size: 1rem;
+        opacity: 0.9;
+      }
+
+      .chat-box {
+        flex: 1;
+        padding: 20px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        background-color: #f9f4fb;
+      }
+
+      .message {
+        max-width: 80%;
+        padding: 12px 18px;
+        border-radius: 18px;
+        line-height: 1.5;
+        position: relative;
+        animation: fadeIn 0.3s ease-out;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .user-message {
+        align-self: flex-end;
+        background: linear-gradient(to right, #a4508b, #5f0a87);
+        color: white;
+        border-bottom-right-radius: 5px;
+      }
+
+      .bot-message {
+        align-self: flex-start;
+        background-color: white;
+        color: #333;
+        border: 1px solid #e9ecef;
+        border-bottom-left-radius: 5px;
+      }
+
+      .input-section {
+        padding: 20px;
+        background-color: white;
+        border-top: 1px solid #e9ecef;
+        display: flex;
+        gap: 10px;
+      }
+
+      .message-input {
+        flex: 1;
+        padding: 12px 15px;
+        border: 1px solid #d4b5e7;
+        border-radius: 25px;
+        font-size: 1rem;
+        transition: all 0.3s;
+      }
+
+      .message-input:focus {
+        outline: none;
+        border-color: #a4508b;
+        box-shadow: 0 0 0 3px rgba(164, 80, 139, 0.2);
+      }
+
+      .send-btn {
+        padding: 12px 20px;
+        background: linear-gradient(to right, #a4508b, #5f0a87);
+        color: white;
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s;
+      }
+
+      .send-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(95, 10, 135, 0.3);
+      }
+
+      .typing-indicator {
+        display: inline-block;
+        padding: 12px 18px;
+        background-color: white;
+        border: 1px solid #e9ecef;
+        border-radius: 18px;
+        border-bottom-left-radius: 5px;
+        align-self: flex-start;
+      }
+
+      .typing-dots {
+        display: flex;
+        gap: 4px;
+      }
+
+      .typing-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: #a4508b;
+        animation: typing 1.4s infinite ease-in-out;
+      }
+
+      .typing-dot:nth-child(1) {
+        animation-delay: -0.32s;
+      }
+      .typing-dot:nth-child(2) {
+        animation-delay: -0.16s;
+      }
+
+      @keyframes typing {
+        0%, 80%, 100% {
+          transform: scale(0.8);
+          opacity: 0.5;
+        }
+        40% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      .footer {
+        background-color: #f3e5f5;
+        padding: 10px;
+        text-align: center;
+        font-size: 0.85rem;
+        color: #5f0a87;
+      }
+
+      .footer strong {
+        color: #a4508b;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <img src="img/cosmetics.png" alt="Beauty AI Logo" />
+        <h1>Beauty AI 💄</h1>
+        <p>Sua consultora virtual de cosméticos e beleza</p>
+      </div>
+
+      <div class="chat-box" id="chatBox">
+        <div class="message bot-message">
+          Olá! 💋 Eu sou a <strong>Beauty AI</strong>, sua assistente de beleza.  
+          Posso te ajudar com dicas de skincare, maquiagem, perfumes, produtos capilares e muito mais.  
+          O que você gostaria de saber hoje?
+        </div>
+      </div>
+
+      <div class="input-section">
+        <input
+          type="text"
+          class="message-input"
+          placeholder="Pergunte algo sobre cosméticos, maquiagem ou skincare..."
+          id="messageInput"
+        />
+        <button class="send-btn" id="sendMessage">Enviar 💬</button>
+      </div>
+
+      <div class="footer">
+        Criado com 💜 por <strong>Sophia Angelina</strong> e <strong>Maria Eduarda Fortes</strong>
+      </div>
+    </div>
+
+    <script>
+      const apiKey = "AIzaSyBF_Uh31aK0WoH2muOYoQeS1gyBXoCdK-U";
+      const chatBox = document.getElementById("chatBox");
+      const messageInput = document.getElementById("messageInput");
+      const sendButton = document.getElementById("sendMessage");
+
+      sendButton.addEventListener("click", sendMessage);
+      messageInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") sendMessage();
+      });
+
+      async function sendMessage() {
+        const text = messageInput.value.trim();
+        if (!text) return;
+
+        addMessage(text, "user");
+        messageInput.value = "";
+
+        showTypingIndicator();
+
+        try {
+          const response = await callGemini(text);
+          removeTypingIndicator();
+          addMessage(response, "bot");
+        } catch (err) {
+          removeTypingIndicator();
+          addMessage("Ops! Algo deu errado. Tente novamente mais tarde. 💔", "bot");
+        }
+      }
+
+      async function callGemini(userInput) {
+        const endpoint =
+          "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" +
+          apiKey;
+
+        const body = {
+          contents: [
+            {
+              parts: [
+                {
+                  text: `
+Você é a Beauty AI 💄 — uma assistente virtual especializada em cosméticos, maquiagem, skincare e cuidados pessoais.
+Responda sempre de forma gentil, empática e profissional. Dê dicas de produtos, tendências de beleza e orientações de cuidado com a pele e cabelo.
+
+Pergunta do usuário: ${userInput}
+                  `,
+                },
+              ],
+            },
+          ],
+        };
+
+        const res = await fetch(endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+
+        const data = await res.json();
+        if (!data.candidates || !data.candidates[0].content.parts[0].text) {
+          throw new Error("Resposta inválida da API Gemini.");
+        }
+
+        return data.candidates[0].content.parts[0].text;
+      }
+
+      function addMessage(text, sender) {
+        const div = document.createElement("div");
+        div.classList.add("message", sender === "user" ? "user-message" : "bot-message");
+        div.innerHTML = text.replace(/\n/g, "<br>");
+        chatBox.appendChild(div);
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }
+
+      function showTypingIndicator() {
+        const typing = document.createElement("div");
+        typing.classList.add("typing-indicator");
+        typing.id = "typingIndicator";
+        typing.innerHTML = `
+          <div class="typing-dots">
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+          </div>`;
+        chatBox.appendChild(typing);
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }
+
+      function removeTypingIndicator() {
+        const typing = document.getElementById("typingIndicator");
+        if (typing) typing.remove();
+      }
+    </script>
+  </body>
+</html>
